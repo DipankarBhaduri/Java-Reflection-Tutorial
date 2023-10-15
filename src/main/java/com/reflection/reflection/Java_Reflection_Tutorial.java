@@ -4,12 +4,12 @@ import com.reflection.models.ApplicationUser;
 import com.reflection.repositories.ApplicationUserRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/rest")
@@ -87,6 +87,75 @@ public class Java_Reflection_Tutorial {
             }
         }
         System.out.println("After Name : "+ applicationUser.getGender());
+    }
+
+    /**
+     *  @Class_Information_Printer: Create a program that takes a class name as input and prints information
+     *                              about the class, including its fields, methods, and interfaces implemented.
+     */
+    @PostMapping("/classInformationPrinter")
+    public void classInformationPrinter (@RequestParam String className) throws ClassNotFoundException {
+        Class<?> clazz = Class.forName(className);
+        assert clazz != null;
+        String collName = clazz.getName();
+        System.out.println("Information About the Class : "+collName);
+
+        Field[] fields = clazz.getDeclaredFields();
+        Arrays.stream(fields).forEach(field -> System.out.println(field.getName()+", "+field.getType()));
+
+        Method [] methods = clazz.getDeclaredMethods();
+        Arrays.stream(methods).forEach(method -> System.out.println(method.getName()));
+    }
+
+    /**
+     @Get_and_Set_Fields: Write a program that demonstrates how to get and set the values of public
+                          fields in an object using reflection.
+     */
+    @PostMapping("/getSetFields")
+    public void getSetFields() {
+        ApplicationUser applicationUser = new ApplicationUser("12345", "Dipankar", "dipankarbhaduri8@gmail.com", 26);
+        Class<?> clazz = applicationUser.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        Arrays.stream(fields).forEach(field -> {
+            if(StringUtils.isNotBlank(field.getName()) && field.getName().equals("_id")) {
+                field.setAccessible(true);
+                try {
+                    field.set(applicationUser, "111122223333");
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if(StringUtils.isNotBlank(field.getName()) && field.getName().equals("name")) {
+                field.setAccessible(true);
+                try {
+                    field.set(applicationUser, "Nitin");
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if(StringUtils.isNotBlank(field.getName()) && field.getName().equals("age")) {
+                field.setAccessible(true);
+                try {
+                    field.set(applicationUser, 50);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        System.out.println("_id : "+applicationUser.get_id());
+        System.out.println("_id : "+applicationUser.getName());
+        System.out.println("_id : "+applicationUser.getAge());
+    }
+
+    /**
+     @Invoke_Constructors : Use reflection to instantiate an object by calling one of its constructors
+     dynamically. Print out the created object.
+     */
+    public void invokeConstructors() {
+
     }
 }
 
