@@ -11,8 +11,6 @@ public class Application {
 }
 
 /**
- Invoke Constructors: Use reflection to instantiate an object by calling one of its constructors
- dynamically. Print out the created object.
 
  Annotations Detector: Write a program that scans a package for classes with a specific
  annotation and prints out their names.

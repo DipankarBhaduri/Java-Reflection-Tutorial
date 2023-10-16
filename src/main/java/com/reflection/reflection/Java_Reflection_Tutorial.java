@@ -6,6 +6,7 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -154,8 +155,20 @@ public class Java_Reflection_Tutorial {
      @Invoke_Constructors : Use reflection to instantiate an object by calling one of its constructors
      dynamically. Print out the created object.
      */
-    public void invokeConstructors() {
+    @PostMapping("/invokeConstructors")
+    public ApplicationUser invokeConstructors() throws Exception {
+        Class<?> clazz = ApplicationUser.class;
+        // Get the constructor with a String parameter
+        Constructor<?> constructor = clazz.getConstructor();
 
+        ApplicationUser applicationUser = (ApplicationUser) constructor.newInstance();
+
+        // Set the properties of the object
+        applicationUser.set_id("1234");
+        applicationUser.setName("Dipankar");
+        applicationUser.setEmail("dipankar@e-labs.ai");
+        applicationUser.setAge(26);
+
+        return applicationUser;
     }
 }
-
